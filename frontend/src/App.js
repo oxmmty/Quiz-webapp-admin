@@ -48,7 +48,7 @@ function App() {
         });
         dispatch({ type: "SET_TASK", payload: res.data });
       } catch (error) {
-        console.log(error);
+        console.log("App.js error", error);
       }
     };
     if (userToken) {
