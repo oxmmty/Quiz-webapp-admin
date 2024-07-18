@@ -8,6 +8,7 @@ dotenv.config();
 
 // Route to handle "forgot password" request
 const forgotPassword = async (req, res) => {
+  console.log("forgotPassword");
   // const { email } = req.body;
 
   // // Check if email exists in the database
