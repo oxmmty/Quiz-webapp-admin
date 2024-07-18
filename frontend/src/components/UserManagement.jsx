@@ -2,6 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
 import Switch from "@mui/material/Switch";
 import axios from "../Axios/axios.js";
@@ -13,17 +14,18 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import CssBaseline from "@mui/material/CssBaseline";
+import OutlinedInput from "@mui/material/OutlinedInput";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import Snackbar from '@mui/material/Snackbar';
-import { useStepContext } from "@mui/material";
+import Snackbar from "@mui/material/Snackbar";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import InputAdornment from "@mui/material/InputAdornment";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -85,17 +87,29 @@ const IOSSwitch = styled((props) => (
 }));
 
 const defaultTheme = createTheme();
-const vertical = 'bottom';
-const horizontal = 'center';
+const vertical = "bottom";
+const horizontal = "center";
 
-function UserManagement() {
+const UserManagement = () => {
   const [people, setPeople] = useState([]);
   const [checked, setChecked] = useState(null);
   const [open, setOpen] = useState(false);
   const [openAdd, setOpenAdd] = useState(false);
   const [deleteId, setDeleteId] = useState("");
   const [openSnack, setOpenSnack] = useState(false);
-  const [snackText, setSnackText] = useState('');
+  const [snackText, setSnackText] = useState("");
+  const [status, setStatus] = useState("");
+  const [nameValue, setNameValue] = useState("");
+  const [emailValue, setEmailValue] = useState("");
+  const [ageValue, setAgeValue] = useState(0);
+  const [clientId, setClientId] = useState("");
+  const [showPassword, setShowPassword] = React.useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
 
   function handleClickOpen(id) {
     setDeleteId(id);
@@ -104,7 +118,7 @@ function UserManagement() {
 
   const handleCloseSnack = () => {
     setOpenSnack(false);
-  }
+  };
 
   async function handleAgree(id) {
     setOpen(false);
@@ -126,6 +140,21 @@ function UserManagement() {
     setOpenAdd(false);
   };
 
+  const handleClickEdit = async (e, clientid) => {
+    e.preventDefault();
+    setStatus("edit");
+    try {
+      const res1 = await axios.get(`/client/getClient/${clientid}`);
+      setNameValue(res1.data.name);
+      setEmailValue(res1.data.email);
+      setAgeValue(parseInt(res1.data.age));
+      setClientId(clientid);
+      setOpenAdd(true);
+    } catch (error) {
+      console.error("Error updating apply:", error);
+    }
+  };
+
   async function handleChange(id, event) {
     const apply = event.target.checked; // Boolean state of the checkbox
     try {
@@ -144,19 +173,37 @@ function UserManagement() {
     const data = new FormData(event.currentTarget);
     let name = data.get("name");
     let email = data.get("email");
+    let age = data.get("age");
     let pwd = data.get("password");
+
     try {
-      await axios.post("/client/registerClient", {
-        name: name,
-        email: email,
-        password: pwd,
-      });
+      if (status === "edit") {
+        pwd === ""
+          ? await axios.post(`/client/editClient/${clientId}`, {
+              name: name,
+              email: email,
+              age: age,
+            })
+          : await axios.post(`/client/editClient/${clientId}`, {
+              name: name,
+              email: email,
+              password: pwd,
+              age: age,
+            });
+      } else {
+        await axios.post("/client/registerClient", {
+          name: name,
+          email: email,
+          password: pwd,
+          age: age,
+        });
+      }
       window.location.reload();
-      setSnackText("成果的に登録されました。")
+      setSnackText("成果的に登録されました。");
       setOpenSnack(true);
     } catch (error) {
       console.error("Error updating apply:", error);
-      setSnackText(error.response.data.message)
+      setSnackText(error.response.data.message);
       setOpenSnack(true);
     }
   };
@@ -182,7 +229,13 @@ function UserManagement() {
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
-            onClick={() => setOpenAdd(true)}
+            onClick={() => {
+              setStatus("");
+              setNameValue("");
+              setEmailValue("");
+              setAgeValue("");
+              setOpenAdd(true);
+            }}
           >
             Add User
           </Button>
@@ -233,13 +286,13 @@ function UserManagement() {
                     scope="col"
                     className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    Apply/NOT
+                    Apply / NOT
                   </th>
                   <th
                     scope="col"
                     className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
-                    Remove
+                    Edit / Remove
                   </th>
                 </tr>
               </thead>
@@ -287,6 +340,12 @@ function UserManagement() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-center">
                       <IconButton
+                        aria-label="edit"
+                        onClick={(e) => handleClickEdit(e, person._id)}
+                      >
+                        <EditIcon />
+                      </IconButton>{" "}
+                      <IconButton
                         aria-label="delete"
                         onClick={() => handleClickOpen(person._id)}
                       >
@@ -305,7 +364,7 @@ function UserManagement() {
         open={openSnack}
         onClose={handleCloseSnack}
         message={snackText}
-        key={ vertical + horizontal }
+        key={vertical + horizontal}
       />
 
       <Dialog
@@ -334,78 +393,116 @@ function UserManagement() {
         onClose={handleCloseAdd}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>{"Add User"}</DialogTitle>
+        <DialogTitle>
+          {status === "edit" ? "Edit User" : "Add User"}
+        </DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-slide-description">
-            <div className="">
-              <ThemeProvider theme={defaultTheme}>
-                <Container component="main" maxWidth="xs">
-                  <CssBaseline />
+          <div className="">
+            <ThemeProvider theme={defaultTheme}>
+              <Container component="main" maxWidth="xs">
+                <CssBaseline />
+                <Box
+                  sx={{
+                    marginTop: 3,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
                   <Box
-                    sx={{
-                      marginTop: 3,
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                    }}
+                    component="form"
+                    noValidate
+                    onSubmit={handleSubmit}
+                    sx={{ mt: 1 }}
                   >
-                    <Box
-                      component="form"
-                      noValidate
-                      onSubmit={handleSubmit}
-                      sx={{ mt: 1 }}
-                    >
-                      <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                          <TextField
-                            required
+                    <Grid container spacing={2}>
+                      <Grid item xs={12}>
+                        <TextField
+                          required
+                          fullWidth
+                          label="Full Name"
+                          name="name"
+                          value={nameValue}
+                          onChange={(event) => {
+                            setNameValue(event.target.value);
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <TextField
+                          required
+                          fullWidth
+                          label="Age"
+                          name="age"
+                          type="number"
+                          value={ageValue}
+                          onChange={(event) => {
+                            setAgeValue(event.target.value);
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <TextField
+                          required
+                          fullWidth
+                          label="Email"
+                          name="email"
+                          value={emailValue}
+                          onChange={(event) => {
+                            setEmailValue(event.target.value);
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <FormControl variant="outlined" fullWidth>
+                          <InputLabel htmlFor="outlined-adornment-password">
+                            Password*
+                          </InputLabel>
+                          <OutlinedInput
                             fullWidth
-                            id="name"
-                            label="Full Name"
-                            name="name"
-                            autoComplete="name"
-                          />
-                        </Grid>
-                        <Grid item xs={12}>
-                          <TextField
                             required
-                            fullWidth
-                            id="email"
-                            label="Email Address"
-                            name="email"
-                            autoComplete="email"
-                          />
-                        </Grid>
-                        <Grid item xs={12}>
-                          <TextField
-                            required
-                            fullWidth
                             name="password"
                             label="Password"
-                            type="password"
-                            id="password"
-                            autoComplete="new-password"
+                            type={showPassword ? "text" : "password"}
+                            endAdornment={
+                              <InputAdornment position="end">
+                                <IconButton
+                                  aria-label="toggle password visibility"
+                                  onClick={handleClickShowPassword}
+                                  onMouseDown={handleMouseDownPassword}
+                                  edge="end"
+                                >
+                                  {showPassword ? (
+                                    <VisibilityOff />
+                                  ) : (
+                                    <Visibility />
+                                  )}
+                                </IconButton>
+                              </InputAdornment>
+                            }
                           />
-                        </Grid>
+                        </FormControl>
+                      </Grid>
+                      <Grid item xs={12}>
                         <Button
                           type="submit"
                           fullWidth
                           variant="contained"
                           sx={{ mt: 3, mb: 2 }}
                         >
-                          Add User
+                          {status === "edit" ? "Edit" : "Add"}
                         </Button>
                       </Grid>
-                    </Box>
+                    </Grid>
                   </Box>
-                </Container>
-              </ThemeProvider>
-            </div>
-          </DialogContentText>
+                </Box>
+              </Container>
+            </ThemeProvider>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
   );
-}
+};
 
 export default UserManagement;

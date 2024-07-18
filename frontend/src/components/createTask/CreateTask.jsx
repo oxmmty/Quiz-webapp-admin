@@ -3,11 +3,11 @@ import { useContext } from "react";
 import TaskContext from "../../context/TaskContext";
 import TokenContext from "../../context/TokenContext";
 import axios from "../../Axios/axios.js";
-import Snackbar from '@mui/material/Snackbar';
+import Snackbar from "@mui/material/Snackbar";
 import "./createTask.css";
 
-const vertical = 'bottom';
-const horizontal = 'center';
+const vertical = "bottom";
+const horizontal = "center";
 
 function CreateTask() {
   const { dispatch } = useContext(TaskContext);
@@ -31,7 +31,7 @@ function CreateTask() {
   const [correctAnswer, setCorrectAnswer] = useState("");
   const [realId, setRealId] = useState("");
   const [openSnack, setOpenSnack] = useState(false);
-  const [snackText, setSnackText] = useState('');
+  const [snackText, setSnackText] = useState("");
 
   useEffect(() => {
     async function getCategoryFunc() {
@@ -47,7 +47,7 @@ function CreateTask() {
 
   const handleCloseSnack = () => {
     setOpenSnack(false);
-  }
+  };
 
   const handleAdd = async (e) => {
     e.preventDefault();
@@ -78,6 +78,7 @@ function CreateTask() {
         }
       );
       setRealId(res);
+      window.location.reload();
     } catch (error) {
       console.log(error);
       setSnackText(error.response.data.message);
@@ -150,7 +151,6 @@ function CreateTask() {
     } else {
       setSnackText("Fill out the category name to add");
       setOpenSnack(true);
-
     }
   };
 
@@ -288,7 +288,6 @@ function CreateTask() {
                 name="answerD"
                 id="answerD"
                 value={answerD}
-                required
                 onChange={(e) => setAnswerD(e.target.value)}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               />
@@ -327,7 +326,7 @@ function CreateTask() {
               onChange={(e) => setCorrectAnswer(e.target.value)}
               value={correctAnswer}
             >
-              <option selected></option>
+              <option defaultValue={""}></option>
               <option value="A">A</option>
               <option value="B">B</option>
               <option value="C">C</option>
@@ -349,11 +348,9 @@ function CreateTask() {
         open={openSnack}
         onClose={handleCloseSnack}
         message={snackText}
-        key={ vertical + horizontal }
+        key={vertical + horizontal}
       />
     </div>
-
-    
   );
 }
 
