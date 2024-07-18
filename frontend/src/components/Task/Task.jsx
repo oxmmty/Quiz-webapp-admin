@@ -4,7 +4,6 @@ import "./task.css";
 import { useContext } from "react";
 import TaskContext from "../../context/TaskContext";
 import TokenContext from "../../context/TokenContext";
-import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import Snackbar from "@mui/material/Snackbar";
 import axios from "../../Axios/axios.js";
@@ -125,7 +124,7 @@ function Task({ task, id }) {
     setSubCategory(e.target.value);
   };
 
-  async function handleRemove(e, taskid, id) {
+  async function handleDeleteConfirm(e, taskid) {
     e.preventDefault();
     try {
       await axios.post(
@@ -142,11 +141,7 @@ function Task({ task, id }) {
     } catch (error) {
       console.log(error);
     }
-
-    dispatch({
-      type: "REMOVE_TASK",
-      id,
-    });
+    window.location.reload();
   }
 
   const handleEdit = async (e, taskid) => {
@@ -176,31 +171,15 @@ function Task({ task, id }) {
   };
 
   return (
-    <div className="bg-slate-300 py-4 rounded-lg shadow-md flex items-center justify-center gap-2 mb-3 px-3">
-      <div className="task-info text-slate-900 text-sm w-10/12">
-        <h4 className="task-title text-lg capitalize">{task.subCategory}</h4>
-        <p className="task-description">{task.subHeading}</p>
-        <div className="italic opacity-60">
-          {task?.createdAt ? (
-            <p>{moment(task.createdAt).fromNow()}</p>
-          ) : (
-            <p>just now</p>
-          )}
-        </div>
-      </div>
-      <div className="remove-task text-sm text-white">
-        <EditIcon
+    <div className="">
+      <div className="remove-task text-lg text-white cursor-pointer border border-white w-8 text-center rounded-full border-2 bg-blue-700">
+        <div onClick={(e) => handleEdit(e, task._id, id)}>{id}</div>
+        {/* <EditIcon
           style={{ fontSize: 30, cursor: "pointer" }}
           size="large"
           onClick={(e) => handleEdit(e, task._id, id)}
           className="edit-task-btn bg-blue-700 rounded-full border-2 shadow-2xl border-white p-1 mr-3"
-        />
-        <DeleteIcon
-          style={{ fontSize: 30, cursor: "pointer" }}
-          size="large"
-          onClick={(e) => handleRemove(e, task._id, id)}
-          className="remove-task-btn bg-blue-700 rounded-full border-2 shadow-2xl border-white p-1"
-        />
+        /> */}
       </div>
       <Snackbar
         anchorOrigin={{ vertical, horizontal }}
@@ -216,29 +195,9 @@ function Task({ task, id }) {
         onClose={handleCloseEditDialog}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogTitle>{"Edit Problem"}</DialogTitle>
+        <DialogTitle>{"Edit / Delete Problem"}</DialogTitle>
         <DialogContent>
           <form>
-            <div>
-              <label htmlFor="title">Question Category</label>
-              <div className="flex flex-row p-2.5 items-center">
-                <select
-                  id="subCategory"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/4 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  onChange={handleCategoryChange}
-                  value={subCategory}
-                >
-                  <option value="" disabled>
-                    Choose a Category
-                  </option>
-                  {categories.map((category, index) => (
-                    <option key={index} value={category.name}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
             <div>
               <label htmlFor="title">QuestionTitle</label>
               <input
@@ -386,6 +345,12 @@ function Task({ task, id }) {
                 onClick={(e) => handleEditConfirm(e, taskId)}
               >
                 Edit
+              </button>
+              <button
+                className=" bg-red-700 rounded-md text-white px-5 py-3 w-36 font-bold text-lg ml-8"
+                onClick={(e) => handleDeleteConfirm(e, taskId)}
+              >
+                Delete
               </button>
             </div>
           </form>
