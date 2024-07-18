@@ -13,6 +13,7 @@ const createToken = (id) => {
 
 //login user
 const loginUser = async (req, res) => {
+  console.log("loginUser");
   const { email, password } = req.body;
   console.log(email, password);
   try {
