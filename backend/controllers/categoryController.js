@@ -38,7 +38,7 @@ const getCategory = (req, res) => {
         .status(500)
         .send({ message: "Error reading file", error: err });
     }
-
+    console.log("getCategory");
     try {
       const jsonData = JSON.parse(data);
       res.send(jsonData);
