@@ -6,6 +6,7 @@ import taskModel from "../models/taskModel.js";
 dotenv.config();
 
 const addTask = async (req, res) => {
+  console.log("addTask");
   const {
     subCategory,
     subHeading,
