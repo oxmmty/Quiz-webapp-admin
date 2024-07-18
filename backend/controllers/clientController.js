@@ -23,7 +23,7 @@ const loginClient = async (req, res) => {
     if (!client) {
       return res.status(400).json({ message: "client does not exist" });
     }
-
+    console.log("loginClient");
     const isMatch = await bcrypt.compare(password, client.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
