@@ -5,6 +5,8 @@ import AllTask from "./components/AllTask";
 import Layout from "./components/Layout";
 import TaskContext from "./context/TaskContext";
 import TokenContext from "./context/TokenContext";
+import CategoryContext from "./context/CategoryContext";
+import categoryReducer from "./reducer/categoryReducer";
 import taskReducer from "./reducer/taskReducer";
 import tokenReducer from "./reducer/tokenReducer";
 import userReducer from "./reducer/userReducer";
@@ -20,6 +22,7 @@ function App() {
   const [tasks, dispatch] = useReducer(taskReducer, []);
   const [userToken, tokenDispatch] = useReducer(tokenReducer, token);
   const [user, userDispatch] = useReducer(userReducer, {});
+  const [category, categoryDispatch] = useReducer(categoryReducer, "");
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -47,6 +50,7 @@ function App() {
           },
         });
         dispatch({ type: "SET_TASK", payload: res.data });
+        categoryDispatch({ type: "SET_CATEGORY", payload: "" });
       } catch (error) {
         console.log("App.js error", error);
       }
@@ -62,21 +66,23 @@ function App() {
         value={{ userToken, tokenDispatch, user, userDispatch }}
       >
         <TaskContext.Provider value={{ tasks, dispatch }}>
-          <Routes>
-            <Route path="/" element={<Header />}>
-              <Route path="/" element={token ? <Layout /> : <Login />}>
-                <Route index element={<AllTask />} />
+          <CategoryContext.Provider value={{ category, categoryDispatch }}>
+            <Routes>
+              <Route path="/" element={<Header />}>
+                <Route path="/" element={token ? <Layout /> : <Login />}>
+                  <Route index element={<AllTask />} />
+                </Route>
+                <Route
+                  path="/manageUser"
+                  element={token ? <UserManagement /> : <Login />}
+                />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/forgotPassword" element={<ForgotPassword />} />
+                <Route path="/resetPassword" element={<ResetPassword />} />
               </Route>
-              <Route
-                path="/manageUser"
-                element={token ? <UserManagement /> : <Login />}
-              />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/forgotPassword" element={<ForgotPassword />} />
-              <Route path="/resetPassword" element={<ResetPassword />} />
-            </Route>
-          </Routes>
+            </Routes>
+          </CategoryContext.Provider>
         </TaskContext.Provider>
       </TokenContext.Provider>
     </BrowserRouter>

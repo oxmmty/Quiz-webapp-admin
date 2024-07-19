@@ -174,12 +174,6 @@ function Task({ task, id }) {
     <div className="">
       <div className="remove-task text-lg text-white cursor-pointer border border-white w-8 text-center rounded-full border-2 bg-blue-700">
         <div onClick={(e) => handleEdit(e, task._id, id)}>{id}</div>
-        {/* <EditIcon
-          style={{ fontSize: 30, cursor: "pointer" }}
-          size="large"
-          onClick={(e) => handleEdit(e, task._id, id)}
-          className="edit-task-btn bg-blue-700 rounded-full border-2 shadow-2xl border-white p-1 mr-3"
-        /> */}
       </div>
       <Snackbar
         anchorOrigin={{ vertical, horizontal }}

@@ -5,6 +5,7 @@ import TokenContext from "../../context/TokenContext";
 import axios from "../../Axios/axios.js";
 import Snackbar from "@mui/material/Snackbar";
 import "./createTask.css";
+import CategoryContext from "../../context/CategoryContext";
 
 const vertical = "bottom";
 const horizontal = "center";
@@ -12,6 +13,7 @@ const horizontal = "center";
 function CreateTask() {
   const { dispatch } = useContext(TaskContext);
   const { userToken } = useContext(TokenContext);
+  const { category } = useContext(CategoryContext);
   const [categories, setCategories] = useState([]);
   const [subCategory, setSubCategory] = useState("");
   const [subHeading, setSubHeading] = useState("");
@@ -44,6 +46,10 @@ function CreateTask() {
     }
     getCategoryFunc();
   }, []);
+
+  useEffect(() => {
+    setAddCategory(category);
+  }, [category]);
 
   const handleCloseSnack = () => {
     setOpenSnack(false);
