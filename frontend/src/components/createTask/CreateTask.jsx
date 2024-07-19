@@ -5,6 +5,7 @@ import TokenContext from "../../context/TokenContext";
 import axios from "../../Axios/axios.js";
 import Snackbar from "@mui/material/Snackbar";
 import "./createTask.css";
+import CategoryContext from "../../context/CategoryContext";
 
 const vertical = "bottom";
 const horizontal = "center";
@@ -12,6 +13,7 @@ const horizontal = "center";
 function CreateTask() {
   const { dispatch } = useContext(TaskContext);
   const { userToken } = useContext(TokenContext);
+  const { category } = useContext(CategoryContext);
   const [categories, setCategories] = useState([]);
   const [subCategory, setSubCategory] = useState("");
   const [subHeading, setSubHeading] = useState("");
@@ -45,6 +47,10 @@ function CreateTask() {
     getCategoryFunc();
   }, []);
 
+  useEffect(() => {
+    setAddCategory(category);
+  }, [category]);
+
   const handleCloseSnack = () => {
     setOpenSnack(false);
   };
@@ -55,7 +61,7 @@ function CreateTask() {
       const res = await axios.post(
         "/task/addTask",
         {
-          subCategory,
+          subCategory: addCategory,
           subHeading,
           question,
           answerA,
@@ -160,29 +166,15 @@ function CreateTask() {
         <form onSubmit={handleAdd}>
           <div>
             <label htmlFor="title">Question Category</label>
-            <div className="flex flex-row w-full p-2.5 items-center">
-              <select
-                id="subCategory"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/4 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                onChange={handleCategoryChange}
-                value={subCategory}
-              >
-                <option value="" disabled>
-                  Choose a Category
-                </option>
-                {categories.map((category, index) => (
-                  <option key={index} value={category.name}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
+            <div className="flex flex-row w-full py-2.5 items-center">
               <input
+                required
                 type="text"
                 name="addCategory"
                 id="addCategory"
                 value={addCategory}
                 onChange={(e) => setAddCategory(e.target.value)}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/4 p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ml-5"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/4 p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               />
               <button
                 type="button"
