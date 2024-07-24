@@ -122,6 +122,7 @@ function Task({ task, id }) {
   };
 
   const handleCategoryChange = (e) => {
+    console.log("handleCategoryChange");
     setSubCategory(e.target.value);
   };
 
