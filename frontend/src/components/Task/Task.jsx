@@ -61,6 +61,7 @@ function Task({ task, id }) {
   };
 
   const handleCloseEditDialog = () => {
+    console.log("handleCloseEditDialog");
     setOpenEditDialog(false);
   };
 
