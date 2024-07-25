@@ -57,7 +57,6 @@ function Task({ task, id }) {
   }, []);
 
   const handleCloseSnack = () => {
-    console.log("handleCloseSnack");
     setOpenSnack(false);
   };
 
