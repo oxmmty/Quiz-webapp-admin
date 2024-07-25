@@ -66,7 +66,6 @@ function Task({ task, id }) {
 
   const handleEditConfirm = async (e, taskid) => {
     e.preventDefault();
-    console.log("handleEditConfirm");
     try {
       const res = await axios.post(`/task/editTask/${taskid}`, {
         subCategory,
