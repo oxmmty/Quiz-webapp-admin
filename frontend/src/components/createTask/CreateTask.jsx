@@ -114,6 +114,7 @@ function CreateTask() {
   };
 
   const handleImageChange = (e, setImageData) => {
+    console.log("handleImageChange");
     const file = e.target.files[0];
 
     if (file && file.type.startsWith("image/")) {
