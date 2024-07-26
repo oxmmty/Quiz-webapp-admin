@@ -37,6 +37,7 @@ function CreateTask() {
 
   useEffect(() => {
     async function getCategoryFunc() {
+      console.log("getCategoryFunc");
       try {
         const res = await axios.get("/category/getCategory");
         setCategories(res.data);
