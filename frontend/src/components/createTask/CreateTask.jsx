@@ -37,6 +37,7 @@ function CreateTask() {
 
   useEffect(() => {
     async function getCategoryFunc() {
+      console.log("getCategoryFunc");
       try {
         const res = await axios.get("/category/getCategory");
         setCategories(res.data);
@@ -114,6 +115,7 @@ function CreateTask() {
   };
 
   const handleImageChange = (e, setImageData) => {
+    console.log("handleImageChange");
     const file = e.target.files[0];
 
     if (file && file.type.startsWith("image/")) {
