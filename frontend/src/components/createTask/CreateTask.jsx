@@ -146,6 +146,7 @@ function CreateTask() {
   };
 
   const AddCategoryFunc = async () => {
+    console.log("Add Category Func");
     if (addCategory !== "") {
       categories.push({ name: addCategory });
       try {
