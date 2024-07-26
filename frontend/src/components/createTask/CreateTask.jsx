@@ -57,6 +57,7 @@ function CreateTask() {
 
   const handleAdd = async (e) => {
     e.preventDefault();
+    console.log("handleAdd");
     try {
       const res = await axios.post(
         "/task/addTask",
