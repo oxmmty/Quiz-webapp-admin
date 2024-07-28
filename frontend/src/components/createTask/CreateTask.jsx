@@ -53,7 +53,6 @@ function CreateTask() {
   }, [category]);
 
   const handleCloseSnack = () => {
-    console.log("handleCloseSnack");
     setOpenSnack(false);
   };
 
