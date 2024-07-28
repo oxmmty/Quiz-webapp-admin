@@ -141,7 +141,6 @@ function CreateTask() {
   };
 
   const handleCategoryChange = (e) => {
-    console.log("handleCategoryChange");
     setSubCategory(e.target.value);
   };
 
