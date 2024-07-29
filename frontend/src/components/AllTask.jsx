@@ -38,7 +38,6 @@ function AllTask() {
   }, []);
 
   const handleCloseDeleteDialog = () => {
-    console.log("handleCloseDeleteDialog");
     setOpenDeleteDialog(false);
   };
 
