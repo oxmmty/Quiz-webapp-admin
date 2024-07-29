@@ -70,6 +70,7 @@ function AllTask() {
 
   const handleEditCategoryName = (e, categoryName, index) => {
     e.preventDefault();
+    console.log("handleEditCategoryName");
     setOpenEdit(true);
     setEditCategoryName(categoryName);
     setEditCategoryIndex(index);
