@@ -43,7 +43,6 @@ function AllTask() {
 
   async function handleRemove(e) {
     e.preventDefault();
-    console.log("handleCloseDeleteDialog");
     const deleteCategoryResponse = axios.post("/category/deleteCategory", {
       editCategoryIndex,
     });
