@@ -58,7 +58,6 @@ function AllTask() {
   }
 
   const handleAddButton = (categoryName) => {
-    console.log("handleAddButton");
     categoryDispatch({
       type: "SET_CATEGORY",
       payload: categoryName,
