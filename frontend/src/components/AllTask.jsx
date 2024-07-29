@@ -77,6 +77,7 @@ function AllTask() {
   };
 
   const handleCloseEdit = () => {
+    console.log("handleCloseEdit");
     setOpenEdit(false);
   };
 
